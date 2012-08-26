@@ -1,0 +1,83 @@
+# charbroil.js
+
+Hot keys? Nope! We're broiling chars. Charbroil takes an element, finds
+all links inside of it and tries to be smart about which character from
+the link to make into the hot key (or broiled char).
+
+Also I make no effort to hide the fact that I ripped off a ton of stuff
+from Joel Oliveira's [chaves.js](https://github.com/jayroh/chaves.js).
+Mostly the jasmine tests, project skeleton and only 90% of this README. THX 2 U!
+
+## Features
+* Easy hot key making
+* Control how the hot key looks via a css class
+* Define explicit keys per link with data attributes
+
+
+## Setup
+
+The dependencies are jQuery (of course) and Thomas Fuch's [Keymaster](https://raw.github.com/madrobby/keymaster/master/keymaster.js). Make sure they're loaded before you get down to business.
+
+```html
+    <ul id="category_list">
+      <li><a href="#apples">apples</a></li>
+      <li><a href="#bananas">bananas</a></li>
+      <li><a href="#cherries">cherries</a></li>
+      <li><a href="#dates">dates</a></li>
+      <li><a href="#figs">figs</a></li>
+      <li><a href="#grapes">grapes</a></li>
+      <li><a href="#honeydew_melon">honeydew melon</a></li>
+    </ul>
+
+    <script src="/javascript/jquery-1.7.2.js"></script>
+    <script src="/javascript/keymaster.js"></script>
+    <script src="/javascript/jquery.charbroil.js"></script>
+    <script>
+      $('#category_list').charbroil();
+    </script>
+```
+
+## Running Tests
+
+I'm using Canary as my browser on a Mac for testing and I've set up the
+following alias for easy file loading / testing.
+
+```zsh
+alias canary='/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --allow-file-access-from-files'
+```
+
+and then
+
+```zsh
+  canary SpecRunner.html
+```
+
+## Thanks!
+
+* Google, Github and VIM for inspiration
+* Thomas Fuchs for his excellent work on [keymaster.js](https://github.com/madrobby/keymaster)
+* [jayroh](https://github.com/jayroh) for feedback.
+* [jquery-boilerplate](https://github.com/zenorocha/jquery-boilerplate/) for the .coffee jumpstart.
+
+## Changelog
+
+* 0.1.0 - Initial push
+
+## For The Future
+
+* Data attribute stuff.
+* Even smarter selecting of broiled char.
+
+## License
+
+**Charbroil.js**
+
+* Dual licensed under the MIT and GPL licenses.
+* Copyright (c) 2012 Shaun Butler
+* https://github.com/TheDudeWithTheThing/charbroil.js
+
+**keymaster**
+
+* Freely distributable and licensed under the [MIT license](https://github.com/madrobby/keymaster).
+* Copyright (c) 2011 Thomas Fuchs
+* https://github.com/madrobby/keymaster

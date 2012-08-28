@@ -33,26 +33,31 @@
       # get all <a> links
       @load_links()
 
-      # first pass, addClasses based on available letter
+      # for all the links we found inside the selector
       for link in @links
         text = $(link).html()
         letter_index = @find_available_letter_index text
-
         # no index then no shortcut =(
         continue if letter_index < 0
-
+        # the shortcut letter
         letter = text.charAt(letter_index).toLowerCase()
+        # mark it as used
         @_shortcuts.push letter
-
-        shortcut = @options.modifier + '+' + letter
-        shortcut_class_name = 'charbroil-' + shortcut.replace('+', '-')
+        # string to pass to keymaster
+        shortcut = @build_shortcut_string(letter)
+        # class string to be added to the link
+        shortcut_class_name = @build_shortcut_class_name shortcut
+        # class to use when there are multiple classes for finding <a>
+        finder_class_name = @get_finder_class_name shortcut_class_name
         # create span for adding class to letter
-        before_text = text.substring 0, letter_index
-        after_text = text.substring letter_index + 1
         replace_with = $("<span>" + letter + "</span>").addClass(@options.hot_key_css_class)
+        # create text for before and after the letter
+        before_letter = text.substring 0, letter_index
+        after_letter = text.substring letter_index + 1
+        # add shortcut class to link so we can find this later
         $(link).addClass shortcut_class_name
         $(link).html replace_with
-        $('.' + shortcut_class_name + ' span').before(before_text).after(after_text)
+        $('.' + finder_class_name + ' span').before(before_letter).after(after_letter)
         key shortcut, (e, h) ->
           shortcut_class_name = 'charbroil-' + h.shortcut.replace('+', '-')
           window.location = $('.' + shortcut_class_name).attr('href')
@@ -71,6 +76,26 @@
 
     last_char: (s) ->
       s.charAt(s.length -1)
+
+    build_shortcut_string: (letter) ->
+      # accept an array of strings
+      if @options.modifier instanceof Array
+        mods = (mod + '+' + letter for mod in @options.modifier)
+        return mods.join ','
+      # or a single string
+      else
+        return @options.modifier + '+' + letter
+
+    build_shortcut_class_name: (keys) ->
+      # replace + with - and split by , for sane class names
+      classes = ('charbroil-' + s.replace(/\+/g, '-') for s in keys.split /,/)
+      return classes.join ' '
+
+    get_finder_class_name: (shortcut_classes) ->
+      classes = shortcut_classes.split(' ')
+      return classes[0]
+
+
 
 
   # A really lightweight plugin wrapper around the constructor,

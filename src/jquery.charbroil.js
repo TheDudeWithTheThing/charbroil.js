@@ -20,7 +20,7 @@
     }
 
     Charbroil.prototype.init = function() {
-      var after_text, before_text, letter, letter_index, link, replace_with, shortcut, shortcut_class_name, text, _i, _len, _ref;
+      var after_letter, before_letter, finder_class_name, letter, letter_index, link, replace_with, shortcut, shortcut_class_name, text, _i, _len, _ref;
       this.load_links();
       _ref = this.links;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -32,14 +32,15 @@
         }
         letter = text.charAt(letter_index).toLowerCase();
         this._shortcuts.push(letter);
-        shortcut = this.options.modifier + '+' + letter;
-        shortcut_class_name = 'charbroil-' + shortcut.replace('+', '-');
-        before_text = text.substring(0, letter_index);
-        after_text = text.substring(letter_index + 1);
+        shortcut = this.build_shortcut_string(letter);
+        shortcut_class_name = this.build_shortcut_class_name(shortcut);
+        finder_class_name = this.get_finder_class_name(shortcut_class_name);
         replace_with = $("<span>" + letter + "</span>").addClass(this.options.hot_key_css_class);
+        before_letter = text.substring(0, letter_index);
+        after_letter = text.substring(letter_index + 1);
         $(link).addClass(shortcut_class_name);
         $(link).html(replace_with);
-        $('.' + shortcut_class_name + ' span').before(before_text).after(after_text);
+        $('.' + finder_class_name + ' span').before(before_letter).after(after_letter);
         key(shortcut, function(e, h) {
           shortcut_class_name = 'charbroil-' + h.shortcut.replace('+', '-');
           return window.location = $('.' + shortcut_class_name).attr('href');
@@ -68,6 +69,46 @@
 
     Charbroil.prototype.last_char = function(s) {
       return s.charAt(s.length(-1));
+    };
+
+    Charbroil.prototype.build_shortcut_string = function(letter) {
+      var mod, mods;
+      if (this.options.modifier instanceof Array) {
+        mods = (function() {
+          var _i, _len, _ref, _results;
+          _ref = this.options.modifier;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            mod = _ref[_i];
+            _results.push(mod + '+' + letter);
+          }
+          return _results;
+        }).call(this);
+        return mods.join(',');
+      } else {
+        return this.options.modifier + '+' + letter;
+      }
+    };
+
+    Charbroil.prototype.build_shortcut_class_name = function(keys) {
+      var classes, s;
+      classes = (function() {
+        var _i, _len, _ref, _results;
+        _ref = keys.split(/,/);
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          s = _ref[_i];
+          _results.push('charbroil-' + s.replace(/\+/g, '-'));
+        }
+        return _results;
+      })();
+      return classes.join(' ');
+    };
+
+    Charbroil.prototype.get_finder_class_name = function(shortcut_classes) {
+      var classes;
+      classes = shortcut_classes.split(' ');
+      return classes[0];
     };
 
     return Charbroil;

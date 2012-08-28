@@ -1,6 +1,5 @@
 # the simplest test I could possibly write for this thing
-
-describe "Charbroil", -> 
+describe "Charbroil Simple Defaults", -> 
   beforeEach ->
     loadFixtures 'default-list.html'
     @list = $('.categories').charbroil()
@@ -14,3 +13,9 @@ describe "Charbroil", ->
   it "should have a highlighted letter", ->
     for link in @links
       expect($(link).find('span')).toHaveClass('charbroil-hot')
+
+  it "should contain the full word in the link", ->
+    for link in @links
+      $(link).find('span').remove()
+      expect($(link).html().length).toBeGreaterThan(0)
+

@@ -6,7 +6,8 @@
   document = window.document;
   defaults = {
     hot_key_css_class: 'charbroil-hot',
-    modifier: 'ctrl'
+    modifier: 'ctrl',
+    exclude: []
   };
   Charbroil = (function() {
 
@@ -15,7 +16,6 @@
       this.options = $.extend({}, defaults, options);
       this._defaults = defaults;
       this._name = pluginName;
-      this._shortcuts = [];
       this.init();
     }
 
@@ -31,7 +31,7 @@
           continue;
         }
         letter = text.charAt(letter_index).toLowerCase();
-        this._shortcuts.push(letter);
+        this.options.exclude.push(letter);
         shortcut = this.build_shortcut_string(letter);
         shortcut_class_name = this.build_shortcut_class_name(shortcut);
         finder_class_name = this.get_finder_class_name(shortcut_class_name);
@@ -60,7 +60,7 @@
         if (!/[a-z]/.test(letter)) {
           continue;
         }
-        if ($.inArray(letter, this._shortcuts) === -1) {
+        if ($.inArray(letter, this.options.exclude) === -1) {
           return index;
         }
       }

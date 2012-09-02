@@ -1,4 +1,3 @@
-# the simplest test I could possibly write for this thing
 describe "Charbroil Simple Defaults", -> 
   beforeEach ->
     loadFixtures 'default-list.html'

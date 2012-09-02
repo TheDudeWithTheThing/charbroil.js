@@ -15,8 +15,8 @@ describe("Charbroil with multiple modifiers", function() {
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       link = _ref[_i];
       letter = $(link).find('span').html().charAt(0).toLowerCase();
-      expect(link).toHaveClass('charbroil-shift-' + letter);
-      _results.push(expect(link).toHaveClass('charbroil-command-' + letter));
+      expect($(link)).toHaveClass('charbroil-shift-' + letter);
+      _results.push(expect($(link)).toHaveClass('charbroil-command-' + letter));
     }
     return _results;
   });

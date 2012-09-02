@@ -13,6 +13,7 @@
   defaults =
     hot_key_css_class: 'charbroil-hot'
     modifier: 'ctrl'
+    exclude: []
 
   # The actual plugin constructor
   class Charbroil
@@ -25,7 +26,6 @@
 
       @_defaults = defaults
       @_name = pluginName
-      @_shortcuts = []
 
       @init()
 
@@ -42,7 +42,7 @@
         # the shortcut letter
         letter = text.charAt(letter_index).toLowerCase()
         # mark it as used
-        @_shortcuts.push letter
+        @options.exclude.push letter
         # string to pass to keymaster
         shortcut = @build_shortcut_string(letter)
         # class string to be added to the link
@@ -71,7 +71,7 @@
         letter = words[index].toLowerCase()
         # match only a-z
         continue if !/[a-z]/.test letter
-        return index if $.inArray(letter, @_shortcuts) == -1 
+        return index if $.inArray(letter, @options.exclude) == -1 
       return -1
 
     last_char: (s) ->

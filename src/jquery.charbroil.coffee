@@ -26,6 +26,7 @@
 
       @_defaults = defaults
       @_name = pluginName
+      @_letter_score = []
 
       @init()
 
@@ -33,46 +34,88 @@
       # get all <a> links
       @load_links()
 
-      # for all the links we found inside the selector
+      # for all the links we found inside the selector, count characters
       for link in @links
         text = $(link).html()
-        letter_index = @find_available_letter_index text
-        # no index then no shortcut =(
-        continue if letter_index < 0
+        for l in text
+          index = l.toLowerCase()
+          @_letter_score[index] = 0 if typeof @_letter_score[index] is 'undefined'
+          @_letter_score[index]++
+
+      # find data attribute keys
+      for link in @links
+        text = $(link).html()
         # the shortcut letter
-        letter = text.charAt(letter_index).toLowerCase()
-        # mark it as used
-        @options.exclude.push letter
+        letter = $(link).attr('charbroil-key')
+        # no letter then no shortcut =(
+        continue if !letter || @options.exclude.indexOf(letter) > -1
         # string to pass to keymaster
-        shortcut = @build_shortcut_string(letter)
-        # class string to be added to the link
-        shortcut_class_name = @build_shortcut_class_name shortcut
-        # class to use when there are multiple classes for finding <a>
-        finder_class_name = @get_finder_class_name shortcut_class_name
-        # create span for adding class to letter
-        replace_with = $("<span>" + letter + "</span>").addClass(@options.hot_key_css_class)
-        # create text for before and after the letter
-        before_letter = text.substring 0, letter_index
-        after_letter = text.substring letter_index + 1
-        # add shortcut class to link so we can find this later
-        $(link).addClass shortcut_class_name
-        $(link).html replace_with
-        $('.' + finder_class_name + ' span').before(before_letter).after(after_letter)
-        key shortcut, (e, h) ->
-          shortcut_class_name = 'charbroil-' + h.shortcut.replace('+', '-')
-          window.location = $('.' + shortcut_class_name).attr('href')
+        @build_char_link(letter, text, link)
+
+      # do first letters
+      for link in @links
+        continue if @has_charbroil_span link
+        text = $(link).html()
+        # the shortcut letter
+        letter = text[0]
+        # no letter then no shortcut =(
+        continue if !letter || @options.exclude.indexOf(letter) > -1
+        # string to pass to keymaster
+        @build_char_link(letter, text, link)
+
+      # now we try to be smart
+      for link in @links
+        continue if @has_charbroil_span link
+        text = $(link).html()
+        # the shortcut letter
+        letter = @find_lowest_score_letter(text.toLowerCase())
+        # no letter then no shortcut =(
+        continue if !letter || @options.exclude.indexOf(letter) > -1
+        @build_char_link(letter, text, link)
       this
 
+    has_charbroil_span: (link) ->
+      return $(link).find('span.' + @options.hot_key_css_class).length > 0
+
+
+    build_char_link: (letter, text, link) ->
+      # mark it as used
+      @options.exclude.push letter
+      letter_index = text.indexOf(letter)
+      shortcut = @build_shortcut_string(letter)
+      # class string to be added to the link
+      shortcut_class_name = @build_shortcut_class_name shortcut
+      # class to use when there are multiple classes for finding <a>
+      finder_class_name = @get_finder_class_name shortcut_class_name
+      # create span for adding class to letter
+      replace_with = $("<span>" + letter + "</span>").addClass(@options.hot_key_css_class)
+      # create text for before and after the letter
+      before_letter = text.substring 0, letter_index
+      after_letter = text.substring letter_index + 1
+      # add shortcut class to link so we can find this later
+      $(link).addClass shortcut_class_name
+      $(link).html replace_with
+      # piece together hot letter with rest of word(s)
+      $('.' + finder_class_name + ' span').before(before_letter).after(after_letter)
+      # bind key using keymaster
+      key shortcut, (e, h) ->
+        shortcut_class_name = 'charbroil-' + h.shortcut.replace('+', '-')
+        window.location = $('.' + shortcut_class_name).attr('href')
+
+    # get all a tags in element
     load_links: ->
       @links = $(@element).find('a')
 
-    find_available_letter_index: (words) ->
-      for index in [0..words.length - 1]
-        letter = words[index].toLowerCase()
-        # match only a-z
-        continue if !/[a-z]/.test letter
-        return index if $.inArray(letter, @options.exclude) == -1 
-      return -1
+
+    find_lowest_score_letter: (word) ->
+      # seed score
+      letter = word[0]
+      score = @_letter_score[letter]
+      for char in word
+        if @_letter_score[char] < score
+          letter = char
+          score = @_letter_score[char]
+      letter
 
     last_char: (s) ->
       s.charAt(s.length -1)

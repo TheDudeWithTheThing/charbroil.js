@@ -23,7 +23,7 @@ describe("Charbroil Simple Defaults", function() {
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       link = _ref[_i];
-      _results.push(expect($(link).find('span')).toHaveClass('charbroil-hot'));
+      _results.push(expect($(link).find('span.charbroil-hot').length).toBeGreaterThan(0));
     }
     return _results;
   });

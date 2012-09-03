@@ -34,7 +34,7 @@
       # get all <a> links
       @load_links()
 
-      # for all the links we found inside the selector, count characters
+      # for all the links we found inside the selector, count characters inside the A
       for link in @links
         text = $(link).html()
         for l in text
@@ -44,12 +44,11 @@
 
       # find data attribute keys
       for link in @links
-        text = $(link).html()
         # the shortcut letter
         letter = $(link).attr('charbroil-key')
         # no letter then no shortcut =(
-        continue if !letter || @options.exclude.indexOf(letter) > -1
-        # string to pass to keymaster
+        continue if !@is_valid_letter letter
+        text = $(link).html()
         @build_char_link(letter, text, link)
 
       # do first letters
@@ -57,22 +56,25 @@
         continue if @has_charbroil_span link
         text = $(link).html()
         # the shortcut letter
-        letter = text[0]
+        letter = text[0].toLowerCase()
         # no letter then no shortcut =(
-        continue if !letter || @options.exclude.indexOf(letter) > -1
+        continue if !@is_valid_letter letter
         # string to pass to keymaster
         @build_char_link(letter, text, link)
 
       # now we try to be smart
       for link in @links
         continue if @has_charbroil_span link
-        text = $(link).html()
         # the shortcut letter
+        text = $(link).html()
         letter = @find_lowest_score_letter(text.toLowerCase())
         # no letter then no shortcut =(
-        continue if !letter || @options.exclude.indexOf(letter) > -1
-        @build_char_link(letter, text, link)
+        continue if !@is_valid_letter letter
+        @build_char_link(letter.toLowerCase(), text.toLowerCase(), link)
       this
+
+    is_valid_letter: (letter) ->
+      return (letter && @options.exclude.indexOf(letter) is -1)
 
     has_charbroil_span: (link) ->
       return $(link).find('span.' + @options.hot_key_css_class).length > 0
@@ -80,7 +82,8 @@
 
     build_char_link: (letter, text, link) ->
       # mark it as used
-      @options.exclude.push letter
+      text = text.toLowerCase()
+      @options.exclude.push(letter)
       letter_index = text.indexOf(letter)
       shortcut = @build_shortcut_string(letter)
       # class string to be added to the link
@@ -108,13 +111,11 @@
 
 
     find_lowest_score_letter: (word) ->
-      # seed score
-      letter = word[0]
-      score = @_letter_score[letter]
       for char in word
-        if @_letter_score[char] < score
-          letter = char
-          score = @_letter_score[char]
+        if @is_valid_letter(char) 
+          if !score || (score && @_letter_score[char] < score)
+            letter = char
+            score = @_letter_score[char]
       letter
 
     last_char: (s) ->

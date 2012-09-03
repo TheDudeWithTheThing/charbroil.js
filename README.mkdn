@@ -61,6 +61,9 @@ and then
 
 ## Changelog
 
+* 0.3.0 - adds ability to add charbroil-key attribute to a tag to
+  override "smart" selecting. Selecting is smarter now too.
+* 0.2.0 - I forget
 * 0.1.0 - Initial push
 
 ## For The Future

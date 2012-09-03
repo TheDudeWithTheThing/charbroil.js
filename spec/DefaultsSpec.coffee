@@ -11,7 +11,7 @@ describe "Charbroil Simple Defaults", ->
 
   it "should have a highlighted letter", ->
     for link in @links
-      expect($(link).find('span')).toHaveClass('charbroil-hot')
+      expect($(link).find('span.charbroil-hot').length).toBeGreaterThan(0)
 
   it "should contain the full word in the link", ->
     for link in @links

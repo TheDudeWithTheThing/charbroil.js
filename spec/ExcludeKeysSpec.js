@@ -17,7 +17,6 @@ describe("Charbroil with exclude option", function() {
       expect(link).not.toHaveClass('charbroil-shift-a');
       expect(link).not.toHaveClass('charbroil-shift-b');
     }
-    expect($('.charbroil-shift-p')).toBe('a');
-    return expect($('.charbroil-shift-n')).toBe('a');
+    return expect($('.charbroil-shift-l')).toBe('a');
   });
 });

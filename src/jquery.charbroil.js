@@ -21,12 +21,13 @@
     }
 
     Charbroil.prototype.init = function() {
-      var index, l, letter, link, text, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3;
+      var $el, index, l, letter, link, text, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3;
       this.load_links();
       _ref = this.links;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         link = _ref[_i];
-        text = $(link).html();
+        $el = $(link);
+        text = $el.html();
         for (_j = 0, _len1 = text.length; _j < _len1; _j++) {
           l = text[_j];
           index = l.toLowerCase();
@@ -39,12 +40,13 @@
       _ref1 = this.links;
       for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
         link = _ref1[_k];
-        text = $(link).html();
-        letter = $(link).attr('charbroil-key');
-        if (!letter || this.options.exclude.indexOf(letter) > -1) {
+        $el = $(link);
+        letter = $el.attr('data-charbroil-key');
+        if (!this.is_valid_letter(letter)) {
           continue;
         }
-        this.build_char_link(letter, text, link);
+        text = $el.html();
+        this.build_char_link(letter, text, $el);
       }
       _ref2 = this.links;
       for (_l = 0, _len3 = _ref2.length; _l < _len3; _l++) {
@@ -53,8 +55,8 @@
           continue;
         }
         text = $(link).html();
-        letter = text[0];
-        if (!letter || this.options.exclude.indexOf(letter) > -1) {
+        letter = text[0].toLowerCase();
+        if (!this.is_valid_letter(letter)) {
           continue;
         }
         this.build_char_link(letter, text, link);
@@ -67,12 +69,16 @@
         }
         text = $(link).html();
         letter = this.find_lowest_score_letter(text.toLowerCase());
-        if (!letter || this.options.exclude.indexOf(letter) > -1) {
+        if (!this.is_valid_letter(letter)) {
           continue;
         }
-        this.build_char_link(letter, text, link);
+        this.build_char_link(letter.toLowerCase(), text.toLowerCase(), link);
       }
       return this;
+    };
+
+    Charbroil.prototype.is_valid_letter = function(letter) {
+      return letter && this.options.exclude.indexOf(letter) === -1;
     };
 
     Charbroil.prototype.has_charbroil_span = function(link) {
@@ -81,6 +87,7 @@
 
     Charbroil.prototype.build_char_link = function(letter, text, link) {
       var after_letter, before_letter, finder_class_name, letter_index, replace_with, shortcut, shortcut_class_name;
+      text = text.toLowerCase();
       this.options.exclude.push(letter);
       letter_index = text.indexOf(letter);
       shortcut = this.build_shortcut_string(letter);
@@ -104,13 +111,13 @@
 
     Charbroil.prototype.find_lowest_score_letter = function(word) {
       var char, letter, score, _i, _len;
-      letter = word[0];
-      score = this._letter_score[letter];
       for (_i = 0, _len = word.length; _i < _len; _i++) {
         char = word[_i];
-        if (this._letter_score[char] < score) {
-          letter = char;
-          score = this._letter_score[char];
+        if (this.is_valid_letter(char)) {
+          if (!score || (score && this._letter_score[char] < score)) {
+            letter = char;
+            score = this._letter_score[char];
+          }
         }
       }
       return letter;

@@ -36,7 +36,8 @@
 
       # for all the links we found inside the selector, count characters inside the A
       for link in @links
-        text = $(link).html()
+        $el = $(link)
+        text = $el.html()
         for l in text
           index = l.toLowerCase()
           @_letter_score[index] = 0 if typeof @_letter_score[index] is 'undefined'
@@ -45,11 +46,12 @@
       # find data attribute keys
       for link in @links
         # the shortcut letter
-        letter = $(link).attr('charbroil-key')
+        $el = $(link)
+        letter = $el.attr('data-charbroil-key')
         # no letter then no shortcut =(
         continue if !@is_valid_letter letter
-        text = $(link).html()
-        @build_char_link(letter, text, link)
+        text = $el.html()
+        @build_char_link(letter, text, $el)
 
       # do first letters
       for link in @links

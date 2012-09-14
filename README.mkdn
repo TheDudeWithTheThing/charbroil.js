@@ -13,6 +13,8 @@ Mostly the jasmine tests, project skeleton and only 90% of this README. THX 2 U!
 * Control how the hot key looks via a css class
 * Define explicit keys per link with data attributes
 
+## Demo
+http://thedudewiththething.github.com/charbroil.js/
 
 ## Setup
 

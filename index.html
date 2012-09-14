@@ -1,1 +1,40 @@
-My GitHub Page
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Charbroil Demo</title>
+
+  <style type="text/css" media="screen">
+    body {font-size: 24px;}
+    ul { list-style:none; clear: both; }
+    ul li { padding: 10px; overflow: hidden; margin-left: 5px; }
+    a {color: black;}
+    .charbroil-hot {color: orange;}
+  </style>
+</head>
+
+<body>
+
+  <h1>Charbroil</h1>
+  <h2>Press ctrl + orange letter to go to link</h2>
+  <h3>Watch the URL change to index.html#your_selected_fruit</h3>
+
+  <ul class="categories">
+    <li><a href="#apples">apples</a></li>
+    <li><a href="#bananas">bananas</a></li>
+    <li><a href="#cherries">cherries</a></li>
+    <li><a href="#dates">dates</a></li>
+    <li><a href="#figs">figs</a></li>
+    <li><a href="#grapes" data-charbroil-key="p">grapes</a></li>
+    <li><a href="#honeydew_melon">honeydew melon</a></li>
+  </ul>
+
+
+  <script type="text/javascript" src="jquery-1.7.2.js"></script>
+  <script type="text/javascript" src="keymaster.js"></script>
+  <script type="text/javascript" src="jquery.charbroil.min.js"></script>
+  <script>
+    $(".categories").charbroil();
+  </script>
+</body>
+</html>

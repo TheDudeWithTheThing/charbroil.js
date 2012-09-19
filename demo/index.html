@@ -16,8 +16,9 @@
 <body>
 
   <h1>Charbroil</h1>
-  <h2>Press ctrl + orange letter to go to link</h2>
-  <h3>Watch the URL change to index.html#selected_fruit</h3>
+  <h5>Press ctrl + orange letter to go to link</h4>
+  <h4>or press shift + orange letter to go to link</h4>
+  <h6>Watch the URL change to index.html#selected_fruit</h6>
 
   <ul class="categories">
     <li><a href="#apples">apples</a></li>
@@ -34,7 +35,7 @@
   <script type="text/javascript" src="../lib/keymaster.js"></script>
   <script type="text/javascript" src="../src/jquery.charbroil.js"></script>
   <script>
-    $(".categories").charbroil();
+    $(".categories").charbroil({modifier: ['shift', 'ctrl']});
   </script>
 </body>
 </html>

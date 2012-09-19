@@ -21,7 +21,7 @@
     }
 
     Charbroil.prototype.init = function() {
-      var $el, index, l, letter, link, text, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3;
+      var $el, index, l, letter, link, text, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2;
       this.load_links();
       _ref = this.links;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -42,28 +42,18 @@
         link = _ref1[_k];
         $el = $(link);
         letter = $el.attr('data-charbroil-key');
-        if (!this.is_valid_letter(letter)) {
-          continue;
-        }
         text = $el.html();
+        if (!this.is_valid_letter(letter)) {
+          letter = text[0].toLowerCase();
+          if (!this.is_valid_letter(letter)) {
+            continue;
+          }
+        }
         this.build_char_link(letter, text, $el);
       }
       _ref2 = this.links;
       for (_l = 0, _len3 = _ref2.length; _l < _len3; _l++) {
         link = _ref2[_l];
-        if (this.has_charbroil_span(link)) {
-          continue;
-        }
-        text = $(link).html();
-        letter = text[0].toLowerCase();
-        if (!this.is_valid_letter(letter)) {
-          continue;
-        }
-        this.build_char_link(letter, text, link);
-      }
-      _ref3 = this.links;
-      for (_m = 0, _len4 = _ref3.length; _m < _len4; _m++) {
-        link = _ref3[_m];
         if (this.has_charbroil_span(link)) {
           continue;
         }
@@ -74,7 +64,7 @@
         }
         this.build_char_link(letter.toLowerCase(), text.toLowerCase(), link);
       }
-      return this;
+      return this.element;
     };
 
     Charbroil.prototype.is_valid_letter = function(letter) {

@@ -45,44 +45,35 @@
 
       # find data attribute keys
       for link in @links
-        # the shortcut letter
         $el = $(link)
+        # the shortcut letter from data attribute
         letter = $el.attr('data-charbroil-key')
-        # no letter then no shortcut =(
-        continue if !@is_valid_letter letter
         text = $el.html()
+        if !@is_valid_letter letter
+          # or do first letter
+          letter = text[0].toLowerCase()
+          continue if !@is_valid_letter letter
         @build_char_link(letter, text, $el)
-
-      # do first letters
-      for link in @links
-        continue if @has_charbroil_span link
-        text = $(link).html()
-        # the shortcut letter
-        letter = text[0].toLowerCase()
-        # no letter then no shortcut =(
-        continue if !@is_valid_letter letter
-        # string to pass to keymaster
-        @build_char_link(letter, text, link)
 
       # now we try to be smart
       for link in @links
         continue if @has_charbroil_span link
-        # the shortcut letter
         text = $(link).html()
         letter = @find_lowest_score_letter(text.toLowerCase())
-        # no letter then no shortcut =(
         continue if !@is_valid_letter letter
         @build_char_link(letter.toLowerCase(), text.toLowerCase(), link)
+      # for chaining
+      @element
 
-      this
-
+    # is the letter valid and not used already?
     is_valid_letter: (letter) ->
       return (letter && @options.exclude.indexOf(letter) is -1)
 
+    # contains a hot letter already?
     has_charbroil_span: (link) ->
       return $(link).find('span.' + @options.hot_key_css_class).length > 0
 
-
+    # builds the link using the element, letter and inner text
     build_char_link: (letter, text, link) ->
       # mark it as used
       @options.exclude.push(letter)
@@ -108,6 +99,7 @@
     load_links: ->
       @links = $(@element).find('a')
 
+    # returns the least used letter
     find_lowest_score_letter: (word) ->
       for char in word
         if @is_valid_letter(char) 
@@ -117,7 +109,7 @@
       letter
 
     build_shortcut_string: (letter) ->
-      # accept an array of strings
+      # accept an array of strings for modifier list
       if @options.modifier instanceof Array
         mods = (mod + '+' + letter for mod in @options.modifier)
         return mods.join ','
@@ -130,12 +122,14 @@
       classes = ('charbroil-' + s.replace(/\+/g, '-') for s in keys.split /,/)
       return classes.join ' '
 
+    # just gets first class name all the time to use as a reference to element
     get_finder_class_name: (shortcut_classes) ->
       classes = shortcut_classes.split(' ')
       return classes[0]
 
   # A really lightweight plugin wrapper around the constructor,
   # preventing against multiple instantiations
+  # part of coffeescript jquery boilerplate
   $.fn[pluginName] = (options) ->
     @each ->
       if !$.data(this, "plugin_#{pluginName}")

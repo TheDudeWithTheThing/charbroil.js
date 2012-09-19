@@ -73,6 +73,7 @@
         # no letter then no shortcut =(
         continue if !@is_valid_letter letter
         @build_char_link(letter.toLowerCase(), text.toLowerCase(), link)
+
       this
 
     is_valid_letter: (letter) ->
@@ -84,24 +85,20 @@
 
     build_char_link: (letter, text, link) ->
       # mark it as used
-      text = text.toLowerCase()
       @options.exclude.push(letter)
-      letter_index = text.indexOf(letter)
+      text = text.toLowerCase()
       shortcut = @build_shortcut_string(letter)
       # class string to be added to the link
       shortcut_class_name = @build_shortcut_class_name shortcut
       # class to use when there are multiple classes for finding <a>
       finder_class_name = @get_finder_class_name shortcut_class_name
       # create span for adding class to letter
-      replace_with = $("<span>" + letter + "</span>").addClass(@options.hot_key_css_class)
-      # create text for before and after the letter
-      before_letter = text.substring 0, letter_index
-      after_letter = text.substring letter_index + 1
+      replace_with = '<span class="' + @options.hot_key_css_class + '">' + letter + "</span>"
+      $el = $(link)
+      # replace letter with span wrapped version of letter
+      $el.html( $el.html().replace(letter, replace_with) )
       # add shortcut class to link so we can find this later
-      $(link).addClass shortcut_class_name
-      $(link).html replace_with
-      # piece together hot letter with rest of word(s)
-      $('.' + finder_class_name + ' span').before(before_letter).after(after_letter)
+      $el.addClass shortcut_class_name
       # bind key using keymaster
       key shortcut, (e, h) ->
         shortcut_class_name = 'charbroil-' + h.shortcut.replace('+', '-')
@@ -111,7 +108,6 @@
     load_links: ->
       @links = $(@element).find('a')
 
-
     find_lowest_score_letter: (word) ->
       for char in word
         if @is_valid_letter(char) 
@@ -119,9 +115,6 @@
             letter = char
             score = @_letter_score[char]
       letter
-
-    last_char: (s) ->
-      s.charAt(s.length -1)
 
     build_shortcut_string: (letter) ->
       # accept an array of strings
@@ -140,9 +133,6 @@
     get_finder_class_name: (shortcut_classes) ->
       classes = shortcut_classes.split(' ')
       return classes[0]
-
-
-
 
   # A really lightweight plugin wrapper around the constructor,
   # preventing against multiple instantiations

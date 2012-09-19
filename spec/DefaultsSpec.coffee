@@ -1,6 +1,6 @@
 describe "Charbroil", ->
 
-  describe "simple defaults", ->
+  describe "with defaults", ->
     beforeEach ->
       loadFixtures 'default-list.html'
       @list = $('.categories').charbroil()
@@ -27,13 +27,12 @@ describe "Charbroil", ->
       @links = $('.categories a')
 
     it "should add shortcut class for command and shift with matching hot key", ->
-      @links = $('.categories a')
       for link in @links
         letter = $(link).find('span').html().charAt(0)
         expect($(link)).toHaveClass('charbroil-shift-' + letter)
         expect($(link)).toHaveClass('charbroil-command-' + letter)
 
-  describe "supports charbroil-key data attribute", ->
+  describe "with charbroil-key data attribute", ->
     beforeEach ->
       loadFixtures 'data-attribute-list.html'
       @list = $('.categories').charbroil()

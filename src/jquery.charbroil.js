@@ -86,19 +86,16 @@
     };
 
     Charbroil.prototype.build_char_link = function(letter, text, link) {
-      var after_letter, before_letter, finder_class_name, letter_index, replace_with, shortcut, shortcut_class_name;
-      text = text.toLowerCase();
+      var $el, finder_class_name, replace_with, shortcut, shortcut_class_name;
       this.options.exclude.push(letter);
-      letter_index = text.indexOf(letter);
+      text = text.toLowerCase();
       shortcut = this.build_shortcut_string(letter);
       shortcut_class_name = this.build_shortcut_class_name(shortcut);
       finder_class_name = this.get_finder_class_name(shortcut_class_name);
-      replace_with = $("<span>" + letter + "</span>").addClass(this.options.hot_key_css_class);
-      before_letter = text.substring(0, letter_index);
-      after_letter = text.substring(letter_index + 1);
-      $(link).addClass(shortcut_class_name);
-      $(link).html(replace_with);
-      $('.' + finder_class_name + ' span').before(before_letter).after(after_letter);
+      replace_with = '<span class="' + this.options.hot_key_css_class + '">' + letter + "</span>";
+      $el = $(link);
+      $el.html($el.html().replace(letter, replace_with));
+      $el.addClass(shortcut_class_name);
       return key(shortcut, function(e, h) {
         shortcut_class_name = 'charbroil-' + h.shortcut.replace('+', '-');
         return window.location = $('.' + shortcut_class_name).attr('href');
@@ -121,10 +118,6 @@
         }
       }
       return letter;
-    };
-
-    Charbroil.prototype.last_char = function(s) {
-      return s.charAt(s.length(-1));
     };
 
     Charbroil.prototype.build_shortcut_string = function(letter) {

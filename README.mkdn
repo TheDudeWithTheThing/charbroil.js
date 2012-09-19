@@ -63,6 +63,8 @@ and then
 
 ## Changelog
 
+* 0.4.0 - got some docs now and improved performance with element
+  caching and reduced number of loops
 * 0.3.0 - adds ability to add charbroil-key attribute to a tag to
   override "smart" selecting. Selecting is smarter now too!
 * 0.2.0 - I forget
@@ -70,8 +72,6 @@ and then
 
 ## For The Future
 
-* A demo file.
-* Data attribute stuff.
 * Even smarter selecting of broiled char.
 
 ## License
